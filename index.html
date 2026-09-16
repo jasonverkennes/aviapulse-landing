@@ -518,7 +518,7 @@
             </div>
           </div>
         </div>
-        <div class="live-counter"><span class="live-dot"></span><span><b id="applicant-count">—</b> operators have already applied</span></div>
+        <div class="live-counter"><span class="live-dot"></span><span><b id="applicant-count">—</b> of 10 Pioneer spots remaining</span></div>
 
         <div class="pioneer-offer" style="margin-top:24px;">You get <b>your first aircraft free</b> — the full product, including AD/SB Monitor — while you're active in the program.</div>
 
@@ -719,15 +719,24 @@
     console.warn('Firebase not configured yet — form will show an error until real config values are added.', e);
   }
 
-  // ── Live applicant counter — public read-only doc, no PII exposed ───────
-  async function loadCount(){
+  // ── Live "spots remaining" counter — public read-only doc, no PII exposed.
+  // Still backed by the real applicant count in Firestore (stats/waitlist) —
+  // just displayed as spots-remaining-out-of-10 rather than a raw applicant
+  // total, per Jason's 2026-09-16 call: honest number, framed around the
+  // program's built-in scarcity (10 spots) instead of total interest shown.
+  const PIONEER_SPOTS = 10;
+  function renderSpotsRemaining(count){
     const countEl = document.getElementById('applicant-count');
-    if (!db) { countEl.textContent = '0'; return; }
+    const remaining = Math.max(0, PIONEER_SPOTS - count);
+    countEl.textContent = remaining;
+  }
+  async function loadCount(){
+    if (!db) { renderSpotsRemaining(0); return; }
     try {
       const snap = await getDoc(doc(db, 'stats', 'waitlist'));
-      countEl.textContent = snap.exists() ? snap.data().count : '0';
+      renderSpotsRemaining(snap.exists() ? snap.data().count : 0);
     } catch (e) {
-      countEl.textContent = '0';
+      renderSpotsRemaining(0);
     }
   }
   loadCount();

@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AviaPulse — GA Maintenance Compliance Tracking</title>
-<meta name="description" content="Compliance tracking built for General Aviation operators — the gap between $12 apps and $2,000/yr enterprise platforms.">
+<title>AviaPulse — AI-Powered GA Maintenance Compliance Tracking</title>
+<meta name="description" content="AI-powered compliance tracking built for General Aviation operators — the gap between $12 apps and $2,000/yr enterprise platforms.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <!-- Free traffic/funnel tracking (Google Analytics 4) — lets us see which zero-cost channel (a forum post, a Facebook group, a direct email) is actually sending people here, without paying for any tool. -->
@@ -12,7 +12,7 @@
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){ dataLayer.push(arguments); }
-  gtag('js', new Date());
+  gtag('js', new Date());A
   gtag('config', 'G-9M960CHKX3');
 </script>
 <style>
@@ -115,6 +115,15 @@
   .mini-cta{ text-align:center; margin-top:44px; }
   .mini-cta a{ color:var(--blue); font-weight:600; font-size:14.5px; text-decoration:none; }
   .mini-cta a:hover{ text-decoration:underline; }
+
+  /* ---- How the AI helps ---- */
+  .ai-section{ background:#EAF2FB; border-bottom:1px solid var(--line); }
+  .ai-note{ margin:26px 0 0; padding:16px 20px; background:#fff; border:1px solid var(--line); border-left:3px solid var(--amber); border-radius:8px; font-size:14.5px; color:var(--ink); }
+  .ai-tag{
+    display:inline-block; margin-left:8px; background:var(--blue); color:#fff; font-size:10.5px;
+    font-weight:700; padding:1px 7px; border-radius:20px; letter-spacing:0.04em; vertical-align:middle;
+    font-family:'Inter',sans-serif;
+  }
 
   /* ---- Features ---- */
   .section-head{ max-width:600px; margin-bottom:44px; }
@@ -280,6 +289,7 @@
       <span class="brand-name">AviaPulse</span>
     </a>
     <nav class="links">
+      <a href="#ai" class="hide-mobile">How the AI helps</a>
       <a href="#features" class="hide-mobile">Features</a>
       <a href="#fleetops" class="hide-mobile">Scheduling &amp; Billing</a>
       <a href="#pricing" class="hide-mobile">Pricing</a>
@@ -293,9 +303,9 @@
 <section class="hero">
   <div class="wrap">
     <div>
-      <div class="eyebrow-line"><span class="dot"></span><span>Built for General Aviation, not airlines</span></div>
+      <div class="eyebrow-line"><span class="dot"></span><span>AI-powered compliance tracking, built for General Aviation — not airlines</span></div>
       <h1>Know what's due on your aircraft before it catches you off guard.</h1>
-      <p class="lede">It's the night before a trip and you're digging through a shoebox of logbooks trying to remember when the transponder check was last done. AviaPulse ends that — it scans the FAA Federal Register for you, reads the dense regulatory text with AI, and tells you exactly what's coming due, before it becomes a problem.</p>
+      <p class="lede">It's the night before a trip and you're digging through a shoebox of logbooks trying to remember when the transponder check was last done. AviaPulse ends that. Its AI scans the FAA Federal Register for you, reads the dense regulatory text, and tells you exactly what's coming due, before it becomes a problem.</p>
       <p class="trust-line">Built by someone who talks to GA mechanics and shop owners every week — not a venture-backed team that's never turned a wrench.</p>
       <div class="cta-row">
         <a href="#apply" onclick="goApply('demo')" class="btn btn-primary">Request a demo</a>
@@ -365,7 +375,49 @@
       <div class="row"><span>Enterprise (CAMP, Veryon)</span><strong>$2,000+/yr</strong></div>
     </div>
 
-    <div class="mini-cta"><a href="#features">See exactly what's included ↓</a></div>
+    <div class="mini-cta"><a href="#ai">See how the AI helps ↓</a></div>
+  </div>
+</section>
+
+<section id="ai" class="ai-section">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="kicker">How the AI helps</span>
+      <h2>The AI does the reading. You and your team make the calls.</h2>
+      <p>The slow part of maintenance compliance is reading: dense regulations, long data sheets, years of scanned logbook pages. AviaPulse uses AI for that reading so you get your time back. Anything it isn't sure about is flagged for you to review.</p>
+    </div>
+
+    <div class="feature-list">
+      <div class="feature-row">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg></div>
+        <div>
+          <h3>It reads new ADs for you <span class="ai-tag">AI</span></h3>
+          <p>Every day, AviaPulse checks the FAA Federal Register and uses AI to read each new Airworthiness Directive. It matches them to your airframe, engine, and propeller, so you see what applies to your aircraft instead of wading through what doesn't.</p>
+        </div>
+      </div>
+      <div class="feature-row">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="12" y2="16"/></svg></div>
+        <div>
+          <h3>It reads your logbook pages <span class="ai-tag">AI</span></h3>
+          <p>Upload scanned or handwritten pages. AI reads them, flags anything it can't read with confidence for you to check, and makes every page keyword-searchable.</p>
+        </div>
+      </div>
+      <div class="feature-row">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4.5 8-11.8A8 8 0 0 0 4 10.2C4 17.5 12 22 12 22Z"/><circle cx="12" cy="10" r="3"/></svg></div>
+        <div>
+          <h3>It reads the data sheets <span class="ai-tag">AI</span></h3>
+          <p>Upload a Type Certificate Data Sheet once, and AI pulls the eligible engines, propellers, and appliances for that model, so your AD list starts from the right place.</p>
+        </div>
+      </div>
+      <div class="feature-row">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+        <div>
+          <h3>It answers your questions <span class="ai-tag">AI</span></h3>
+          <p>A built-in help assistant answers "how do I…" questions about using AviaPulse, so you're not stuck waiting on an email.</p>
+        </div>
+      </div>
+    </div>
+    <div class="ai-note"><strong>The AI is a reading assistant, not a decision-maker.</strong> Airworthiness decisions stay with you and your team, every time.</div>
   </div>
 </section>
 
@@ -389,7 +441,7 @@
         <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg></div>
         <div>
           <h3>Daily automated AD scanning</h3>
-          <p>Checks the FAA Federal Register every day — matching the Register's own real publishing pace — and flags genuinely new ADs before they become a surprise.</p>
+          <p>Checks the FAA Federal Register every day — matching the Register's own real publishing pace — and AI reads each new AD and flags genuinely new ones before they become a surprise.</p>
         </div>
       </div>
       <div class="feature-row">
@@ -403,7 +455,7 @@
         <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
         <div>
           <h3>Write-up to logbook entry, automatically</h3>
-          <p>Report a squawk, resolve it, and AviaPulse generates a real FAA Part 43-compliant logbook entry — ready to sign.</p>
+          <p>Report a squawk, resolve it, and AviaPulse builds the logbook entry for you — ready for you to review and sign.</p>
         </div>
       </div>
       <div class="feature-row">
@@ -565,7 +617,7 @@
         </div>
         <div class="live-counter"><span class="live-dot"></span><span><b id="applicant-count">—</b> of 10 Pioneer spots remaining</span></div>
 
-        <div class="pioneer-offer" style="margin-top:24px;">You get <b>your first aircraft free</b> — the full product, including AD/SB Monitor — while you're active in the program.</div>
+        <div class="pioneer-offer" style="margin-top:24px;">You get <b>your first aircraft free for 12 months</b> — the full product, including AD/SB Monitor — while you're active in the program. You also get <b>20% off any additional aircraft or modules</b> for those same 12 months.</div>
 
         <div class="req-title">In return, we ask for three things</div>
         <ul class="req-list">
@@ -575,11 +627,11 @@
           </li>
           <li>
             <div class="req-num">2</div>
-            <div class="req-text"><strong>A few references</strong> — once you're genuinely using it, introduce us to other operators, mechanics, or shops who deal with the same compliance headache.</div>
+            <div class="req-text"><strong>A few introductions</strong> — once you're genuinely using it, introduce us to other operators, mechanics, or shops who deal with the same compliance headache.</div>
           </li>
           <li>
             <div class="req-num">3</div>
-            <div class="req-text"><strong>A strong review, and permission to share your story</strong> — once you're up and running. In exchange, we'll promote your business to our own audience — a real two-way introduction, not a one-sided ask.</div>
+            <div class="req-text"><strong>Permission to name you as a reference</strong> — once you're up and running, we'd like to be able to say you use AviaPulse. If you're happy with it, we'd also welcome an honest review (we'll note that your first aircraft was free). In return, we're glad to promote your business to our own audience — a real two-way introduction, not a one-sided ask.</div>
           </li>
         </ul>
       </div>
@@ -637,8 +689,12 @@
         <p>Your data is completely isolated from every other customer's at the database level — not just hidden in the interface. Everything is encrypted in transit and at rest through Google Cloud's infrastructure. We haven't gone through formal certifications like SOC 2 yet — that's something we'll pursue at a larger scale — but the fundamentals are built the right way from day one.</p>
       </div>
       <div class="faq-item">
+        <h3>How does the AI work, and who makes the final call?</h3>
+        <p>The AI does the reading: new ADs, data sheets, and scanned logbook pages. When you upload a logbook page, it's sent to an AI service provider (Anthropic) so it can be read. Anything the AI isn't confident about is flagged for you to review, and it doesn't make airworthiness decisions. Those stay with you, your A&amp;P, and your IA.</p>
+      </div>
+      <div class="faq-item">
         <h3>What actually separates this from CAMP or Veryon, besides price?</h3>
-        <p>Those platforms are built for airlines and large fleets with dedicated maintenance departments — sales-gated pricing, and real users report onboarding takes 9+ weeks even for a single aircraft. AviaPulse is built around how a small operator actually works, and it uses AI to do the setup work those platforms still make you do by hand: it reads and digitizes your existing paper logbooks automatically, resolves the exact ADs eligible for your specific airframe and engine from FAA data instead of a generic checklist, and turns a resolved write-up into a ready-to-sign logbook entry. That's why onboarding here is a single sitting, not nine-plus weeks — and why the price is just the price on this page, not a number you get after a sales call.</p>
+        <p>Those platforms are built for airlines and large fleets with dedicated maintenance departments — sales-gated pricing, and real users report onboarding takes 9+ weeks even for a single aircraft. AviaPulse is built around how a small operator actually works, and it uses AI to do the setup work those platforms still make you do by hand: it reads and digitizes your existing paper logbooks automatically and resolves the exact ADs eligible for your specific airframe and engine from FAA data instead of a generic checklist. It also builds your logbook entries from resolved write-ups, so there's no retyping. That's why onboarding here is a single sitting, not nine-plus weeks — and why the price is just the price on this page, not a number you get after a sales call.</p>
       </div>
       <div class="faq-item">
         <h3>Does this replace my mechanic or IA?</h3>
@@ -695,9 +751,10 @@
   });
 
   // ── Countdown to the Pioneer Program application deadline ───────────────
-  // Set 2026-09-11 per Jason: ~4 weeks out from launch (Fri 9/11 -> Fri 10/9).
-  // Format: 'YYYY-MM-DDTHH:MM:SS' in your local time.
-  var PIONEER_DEADLINE = new Date('2026-11-13T23:59:00');
+  // To change the close date, edit the date/time below.
+  // Format: 'YYYY-MM-DDTHH:MM:SS' in the visitor's local time.
+  // (Currently Oct 30, 2026.)
+  var PIONEER_DEADLINE = new Date('2026-10-30T23:59:00');
 
   function updateCountdown(){
     var now = new Date();

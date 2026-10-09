@@ -661,6 +661,10 @@
                 <label for="f-note">Anything we should know? (optional)</label>
                 <input type="text" id="f-note" placeholder="e.g. how many aircraft, what you're using today">
               </div>
+              <div aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;">
+                <label for="f-website">Leave this field empty</label>
+                <input type="text" id="f-website" name="website" tabindex="-1" autocomplete="off">
+              </div>
               <button type="submit" class="btn btn-amber apply-submit" id="applySubmitBtn">Submit application</button>
               <div class="apply-error" id="applyError">Something went wrong — please try again, or email jason@aviapulse.co directly.</div>
             </form>
@@ -843,31 +847,89 @@
   }
   loadCount();
 
+  // ── CRM hand-off — sends each lead to the GA Ops CRM so it shows up there ─
+  // with an in-app alert. The Firestore `leads` write below stays as the
+  // fallback: a lead counts as received if EITHER reaches us. The CRM call
+  // is idempotent on leadId, so retrying is always safe.
+  var CRM_LEAD_URL = 'https://ga-ops-crm.vercel.app/api/inbound/landing-lead';
+  var PENDING_KEY = 'aviapulse_pending_crm_leads';
+
+  function newLeadId(){
+    if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+    return 'l' + Date.now().toString(36) + Math.random().toString(36).slice(2, 12);
+  }
+  function wait(ms){ return new Promise(function(r){ setTimeout(r, ms); }); }
+
+  // Resolves true once the CRM has stored it (or definitively rejected the
+  // payload, which retrying can't fix: 4xx other than 429); false if every
+  // attempt failed and it should be queued for later.
+  async function postToCrm(payload){
+    var delays = [0, 1500, 4000];
+    for (var i = 0; i < delays.length; i++){
+      if (delays[i]) await wait(delays[i]);
+      try {
+        var resp = await fetch(CRM_LEAD_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+          keepalive: true,
+        });
+        if (resp.ok) return true;
+        if (resp.status >= 400 && resp.status < 500 && resp.status !== 429) return 'rejected';
+      } catch (e) { /* network error: retry */ }
+    }
+    return false;
+  }
+
+  function readPending(){
+    try { return JSON.parse(localStorage.getItem(PENDING_KEY) || '[]'); } catch (e) { return []; }
+  }
+  function writePending(list){
+    try { localStorage.setItem(PENDING_KEY, JSON.stringify(list)); } catch (e) {}
+  }
+  // If a send failed earlier (offline, CRM down), try again next time this
+  // visitor opens the page.
+  async function flushPending(){
+    var list = readPending();
+    if (!list.length) return;
+    var left = [];
+    for (var i = 0; i < list.length; i++){
+      if (!(await postToCrm(list[i]))) left.push(list[i]);
+    }
+    writePending(left);
+  }
+  flushPending();
+
   // ── Form submit — writes a lead (private) + increments the public count ─
   document.getElementById('leadForm').addEventListener('submit', async function(e){
     e.preventDefault();
-    const btn = document.getElementById('applySubmitBtn');
-    const errEl = document.getElementById('applyError');
+    var btn = document.getElementById('applySubmitBtn');
+    var errEl = document.getElementById('applyError');
     errEl.style.display = 'none';
 
-    const name = document.getElementById('f-name').value.trim();
-    const email = document.getElementById('f-email').value.trim();
-    const interest = document.getElementById('f-interest').value;
-    const note = document.getElementById('f-note').value.trim();
+    var name = document.getElementById('f-name').value.trim();
+    var email = document.getElementById('f-email').value.trim();
+    var interest = document.getElementById('f-interest').value;
+    var note = document.getElementById('f-note').value.trim();
+    var website = document.getElementById('f-website').value;
+    var leadId = newLeadId();
 
     if (!name || !email){ return; }
-    if (!db) {
-      errEl.textContent = 'This form isn\'t fully connected yet — please email jason@aviapulse.co directly.';
-      errEl.style.display = 'block';
-      return;
-    }
 
     btn.disabled = true;
     btn.textContent = 'Submitting...';
 
-    try {
+    var crmPayload = {
+      leadId: leadId, name: name, email: email, interest: interest, note: note, website: website,
+      utm_source: _utm.utm_source, utm_medium: _utm.utm_medium, utm_campaign: _utm.utm_campaign,
+    };
+
+    // 1) Existing Firestore write (fallback + public counter + GA event).
+    async function saveLeadToFirestore(){
+      if (!db) throw new Error('Firebase not configured');
       await addDoc(collection(db, 'leads'), {
-        name, email, interest, note,
+        name: name, email: email, interest: interest, note: note,
+        leadId: leadId, // lets a CRM record be matched back to this lead
         source: 'landing_page',
         utm_source: _utm.utm_source,
         utm_medium: _utm.utm_medium,
@@ -884,21 +946,35 @@
       // Increment the public counter atomically — the Firestore rule only
       // allows this document to ever go up by exactly 1 per write, so the
       // number shown on the page can't be tampered with from the client.
-      const statsRef = doc(db, 'stats', 'waitlist');
-      await runTransaction(db, async (tx) => {
-        const snap = await tx.get(statsRef);
+      var statsRef = doc(db, 'stats', 'waitlist');
+      await runTransaction(db, async function(tx){
+        var snap = await tx.get(statsRef);
         if (!snap.exists()) {
           tx.set(statsRef, { count: 1 });
         } else {
           tx.update(statsRef, { count: snap.data().count + 1 });
         }
       });
+    }
 
+    // 2) CRM hand-off, in parallel. Success if either path stored the lead.
+    var results = await Promise.allSettled([saveLeadToFirestore(), postToCrm(crmPayload)]);
+    var savedLead = results[0].status === 'fulfilled';
+    var crmOutcome = results[1].status === 'fulfilled' ? results[1].value : false;
+    var savedCrm = crmOutcome === true;
+
+    if (results[0].status === 'rejected') console.error(results[0].reason);
+    if (crmOutcome === false && !website){
+      var pending = readPending();
+      pending.push(crmPayload);
+      writePending(pending);
+    }
+
+    if (savedLead || savedCrm){
       document.getElementById('applyForm').style.display = 'none';
       document.getElementById('applySuccess').style.display = 'block';
       loadCount();
-    } catch (err) {
-      console.error(err);
+    } else {
       errEl.textContent = 'Something went wrong — please try again, or email jason@aviapulse.co directly.';
       errEl.style.display = 'block';
       btn.disabled = false;

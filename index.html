@@ -306,11 +306,12 @@
       <div class="eyebrow-line"><span class="dot"></span><span>AI-powered compliance tracking, built for General Aviation — not airlines</span></div>
       <h1>Know what's due on your aircraft before it catches you off guard.</h1>
       <p class="lede">It's the night before a trip and you're digging through a shoebox of logbooks trying to remember when the transponder check was last done. AviaPulse ends that. Its AI scans the FAA Federal Register for you, reads the dense regulatory text, and tells you exactly what's coming due, before it becomes a problem.</p>
-      <p class="hero-offer" style="color:var(--amber); font-weight:600; font-size:16px; max-width:520px; margin:0 0 14px;">First aircraft free for 12 months. 10 Pioneer spots. Applications close Oct 30.</p>
+      <p class="hero-offer" style="color:var(--amber); font-weight:600; font-size:16px; max-width:520px; margin:0 0 14px;">First aircraft free for 12 months. 10 Pioneer spots. Applications close Dec 13.</p>
       <p class="trust-line">Built by someone with 14+ years around Part 91 and Part 135 operations who talks to GA mechanics and shop owners every week — not a venture-backed team that's never turned a wrench.</p>
       <div class="cta-row">
         <a href="#pioneer" class="btn btn-primary">Apply for a free Pioneer spot</a>
         <a href="#apply" onclick="goApply('demo')" class="btn btn-ghost">Request a demo</a>
+        <a href="https://aviapulse.vercel.app/?demo=true" target="_blank" rel="noopener" class="btn btn-ghost">See it first: live demo, no sign-up</a>
       </div>
     </div>
     <div>
@@ -601,7 +602,7 @@
   <div class="wrap">
     <div class="pioneer-grid">
       <div>
-        <div class="pioneer-badge">Now accepting applications</div>
+        <div class="pioneer-badge" id="pioneer-badge">Now accepting applications</div>
         <h2>The Pioneer Program: help shape AviaPulse, fly one aircraft on us.</h2>
         <p class="lede">We're opening 10 spots for GA operators willing to actually use the product, help us troubleshoot it, and tell us where it's rough before we go wider.</p>
 
@@ -616,10 +617,10 @@
             </div>
           </div>
         </div>
-        <div class="live-counter"><span class="live-dot"></span><span><b id="applicant-count">—</b> of 10 Pioneer spots remaining</span></div>
+        <div class="live-counter" id="live-counter"><span class="live-dot"></span><span><b id="applicant-count">—</b> of 10 Pioneer spots remaining</span></div>
 
-        <div class="pioneer-offer" style="margin-top:24px;">You get <b>your first aircraft free for 12 months</b> — the full product, including AD/SB Monitor — while you're active in the program. You also get <b>20% off any additional aircraft or modules</b> for those same 12 months.</div>
-        <p class="pioneer-deadline" style="margin:10px 0 0; font-size:14px; font-weight:600; color:var(--amber);">Applications close Oct 30 at 11:59 pm</p>
+        <div class="pioneer-offer" style="margin-top:24px;">You get <b>your first aircraft free for 12 months</b> — with every current tool included: AD/SB Monitor, reservations, labor tracking, the rate book and invoicing — while you're active in the program. You also get <b>20% off any additional aircraft or modules</b> for those same 12 months.</div>
+        <p class="pioneer-deadline" style="margin:10px 0 0; font-size:14px; font-weight:600; color:var(--amber);">Applications close Dec 13 at 11:59 pm</p>
 
         <div class="req-title">In return, we ask for three things</div>
         <ul class="req-list">
@@ -758,9 +759,10 @@
 
   // ── Countdown to the Pioneer Program application deadline ───────────────
   // To change the close date, edit the date/time below.
-  // Format: 'YYYY-MM-DDTHH:MM:SS' in the visitor's local time.
-  // (Currently Oct 30, 2026.)
-  var PIONEER_DEADLINE = new Date('2026-10-30T23:59:00');
+  // Format: 'YYYY-MM-DDTHH:MM:SS-06:00' (explicit UTC offset, so every
+  // visitor sees the same moment regardless of their time zone).
+  // (Currently Dec 13, 2026, 11:59 pm Central = CST, UTC-6.)
+  var PIONEER_DEADLINE = new Date('2026-12-13T23:59:00-06:00');
 
   function updateCountdown(){
     var now = new Date();
@@ -774,6 +776,15 @@
     document.getElementById('cd-hours').textContent = String(hours).padStart(2,'0');
     document.getElementById('cd-mins').textContent = String(mins).padStart(2,'0');
     document.getElementById('cd-secs').textContent = String(secs).padStart(2,'0');
+    if (now >= PIONEER_DEADLINE) showClosedState();
+  }
+  // After the deadline: swap the badge for a closed message and hide the
+  // spots counter. The form below stays live so late visitors can still join.
+  function showClosedState(){
+    var badge = document.getElementById('pioneer-badge');
+    if (badge) badge.textContent = 'Pioneer applications are closed. Join the founding list.';
+    var counter = document.getElementById('live-counter');
+    if (counter) counter.style.display = 'none';
   }
   updateCountdown();
   setInterval(updateCountdown, 1000);
